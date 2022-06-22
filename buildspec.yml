@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - echo Building the spring-boot
-      - mvn clean install
+#      - mvn clean install
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - REPOSITORY_URI=712109463133.dkr.ecr.ap-southeast-1.amazonaws.com/aws-cicd
@@ -12,19 +12,20 @@ phases:
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definitions file...
-      - printf '[{"name":"order-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-      - cat imagedefinitions.json
+      - kubectl version --short --client
+#      - echo Build started on `date`
+#      - echo Building the Docker image...
+#      - docker build -t $REPOSITORY_URI:latest .
+#      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+#      - echo Writing image definitions file...
+#      - printf '[{"name":"order-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+#      - cat imagedefinitions.json
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-artifacts:
-  files:
-    - imagedefinitions.json
-    - target/aws-cicd.jar
+#      - echo Build completed on `date`
+#      - echo Pushing the Docker image...
+#      - docker push $REPOSITORY_URI:$IMAGE_TAG
+#artifacts:
+#  files:
+#    - imagedefinitions.json
+#    - target/aws-cicd.jar
